@@ -12,12 +12,7 @@ namespace SGED.Objects.Models.Entities
         public DateTime DateReservation { get; set; }
 
         [Column("valuereservation", TypeName = "decimal(18, 2)")]
-        public decimal ValueReservation
-        {
-            get => _valueReservation;
-            set => _valueReservation = Math.Round(value, 2);
-        }
-        private decimal _valueReservation;
+        public decimal ValueReservation { get; set; }
 
         [Column("createat")]
         public DateTime CreateAt { get; set; }

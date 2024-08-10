@@ -18,12 +18,7 @@ namespace SGED.Objects.Models.Entities
         public string LocationTable { get; set; }
 
         [Column("valuetable", TypeName = "decimal(18, 2)")]
-        public decimal ValueTable
-        {
-            get => _valueTable;
-            set => _valueTable = Math.Round(value, 2);
-        }
-        private decimal _valueTable;
+        public decimal ValueTable { get; set; }
 
         [ForeignKey("idrestaurant")]
         public int IdRestaurant { get; set; }

@@ -12,12 +12,7 @@ namespace SGED.Objects.Models.Entities
         public string NameUser { get; set; }
 
         [Column("emailuser")]
-        public string EmailUser
-        {
-            get => _emailUser;
-            set => _emailUser = value.ToLower();
-        }
-        private string _emailUser;
+        public string EmailUser { get; set; }
 
         [Column("passworduser")]
         public string PasswordUser { get; set; }
