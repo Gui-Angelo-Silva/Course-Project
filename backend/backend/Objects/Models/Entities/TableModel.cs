@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SGED.Objects.Models.Entities
+namespace backend.Objects.Models.Entities
 {
     [Table("table")]
     public class TableModel
@@ -8,16 +8,13 @@ namespace SGED.Objects.Models.Entities
         [Column("idtable")]
         public int Id { get; set; }
 
-        [Column("numbertable")]
-        public int NumberTable { get; set; }
+        [Column("codetable")]
+        public string CodeTable { get; set; }
 
         [Column("capacitypersons")]
         public int CapacityPersons { get; set; }
 
-        [Column("locationtable")]
-        public string LocationTable { get; set; }
-
-        [Column("valuetable", TypeName = "decimal(18, 2)")]
+        [Column("valuetable")]
         public decimal ValueTable { get; set; }
 
         [ForeignKey("idrestaurant")]

@@ -1,21 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SGED.Context;
-//using SGED.Repositories.Entities;
-//using SGED.Repositories.Interfaces;
-//using SGED.Services.Entities;
-//using SGED.Services.Interfaces;
+using backend.Context;
 using System.Text.Json.Serialization;
-using System.Text;
 using Swashbuckle.AspNetCore.SwaggerUI;
-//using SGED.Services.Server.Tasks;
-//using SGED.Objects.Utilities;
-//using SGED.Services.Server.Middleware;
-//using SGED.Services.Server.Attributes;
-//using SGED.Objects.Server;
+using backend.Services.Server;
 
-namespace SGED
+namespace backend
 {
     public class Startup
     {
@@ -35,52 +25,8 @@ namespace SGED
             // Configuração do Swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SGED", Version = "v1" });
-
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = @"Enter 'Bearer' [space] your token",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header
-                        },
-                        new List<string>()
-                    }
-                });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "backend", Version = "v1" });
             });
-
-            // Configuração da autenticação JWT
-            services.AddAuthentication("Bearer")
-                .AddJwtBearer("Bearer", options =>
-                {
-                    /*SecurityEntity securityEntity = new SecurityEntity();
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = securityEntity.Issuer,
-                        ValidAudience = securityEntity.Audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityEntity.Key)),
-                    };*/
-                });
 
             services.AddControllers().AddJsonOptions(
                 c => c.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -89,23 +35,16 @@ namespace SGED
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
-                builder.WithOrigins("http://localhost:3000", "http://localhost:5173")
+                builder.WithOrigins("http://localhost:3000")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
             }));
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("ApiScope", policy =>
-                {
-                    policy.RequireClaim("scope", "sged");
-                });
-            });
-
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            
+            // Injeção de dependências
+            services.AddRestaurantDependencies();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -124,8 +63,6 @@ namespace SGED
                     c.ShowExtensions();
                     c.EnableValidator();
                     c.SupportedSubmitMethods(SubmitMethod.Get, SubmitMethod.Post, SubmitMethod.Put, SubmitMethod.Delete);
-                    c.OAuthClientId("swagger-ui");
-                    c.OAuthAppName("Swagger UI");
                 });
             }
             else
@@ -138,9 +75,6 @@ namespace SGED
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
 
             app.UseCors("MyPolicy");
 

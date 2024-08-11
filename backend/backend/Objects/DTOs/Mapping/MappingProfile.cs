@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using SGED.Objects.DTOs.Entities;
-using SGED.Objects.Models.Entities;
+using backend.Objects.DTOs.Entities;
+using backend.Objects.Models.Entities;
 
-namespace SGED.Objects.DTO.Mappings
+namespace backend.Objects.DTO.Mappings
 {
     public class MappingProfile : Profile
     {

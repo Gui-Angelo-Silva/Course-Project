@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SGED.Objects.Models.Entities
+namespace backend.Objects.Models.Entities
 {
     [Table("restaurant")]
     public class RestaurantModel

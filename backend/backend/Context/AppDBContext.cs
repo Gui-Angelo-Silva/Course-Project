@@ -1,13 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-//using SGED.Context.Builders;
-//using SGED.Objects.Models.Entities;
+using backend.Objects.Models.Entities;
+using backend.Context.Builders;
 
-namespace SGED.Context;
+namespace backend.Context;
 public class AppDBContext : DbContext
 {
-	public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
-
     // Mapeamento Relacional dos Objetos no Bando de Dados
+    public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
+
+    // Conjunto: Restaurante
+    public DbSet<RestaurantModel> Restaurant { get; set; }
+    public DbSet<TableModel> Table { get; set; }
 
 
     // Fluent API
@@ -15,6 +18,8 @@ public class AppDBContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        
+        // Entidades de Restaurante:
+        RestaurantBuilder.Build(modelBuilder);
+        TableBuilder.Build(modelBuilder);
     }
 }
