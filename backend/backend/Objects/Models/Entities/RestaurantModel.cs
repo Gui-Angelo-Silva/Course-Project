@@ -8,6 +8,9 @@ namespace backend.Objects.Models.Entities
         [Column("idrestaurant")]
         public int Id { get; set; }
 
+        [Column("imagerestaurant")]
+        public List<string> ImageRestaurant { get; set; }
+
         [Column("namefranchise")]
         public string NameFranchise { get; set; }
 

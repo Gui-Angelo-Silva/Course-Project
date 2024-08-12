@@ -45,6 +45,7 @@ namespace backend
 
             // Injeção de dependências
             services.AddRestaurantDependencies();
+            services.AddUserDependencies();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

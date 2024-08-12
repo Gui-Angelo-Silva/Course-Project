@@ -1,107 +1,95 @@
 ﻿using backend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using backend.Objects.DTOs.Entities;
-using System.Dynamic;
 using backend.Objects.Server;
-using backend.Services.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using backend.Objects.Utilities;
+using backend.Services.Entities;
+using System.Dynamic;
 
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TableController : Controller
+    public class UserController : Controller
     {
-        private readonly IRestaurantService _restaurantService;
-        private readonly ITableService _tableService;
+        private readonly IUserService _userService;
         private readonly Response _response;
 
-        public TableController(IRestaurantService restaurantService, ITableService tableService)
+        public UserController(IUserService userService)
         {
-            _restaurantService = restaurantService;
-            _tableService = tableService;
+            _userService = userService;
 
             _response = new Response();
         }
 
         [HttpGet()]
-        public async Task<ActionResult<IEnumerable<TableDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll()
         {
             try
             {
-                var tablesDTO = await _tableService.GetAll();
+                var usersDTO = await _userService.GetAll();
                 _response.SetSuccess();
-                _response.Message = tablesDTO.Any() ?
-                    "Lista da(s) Mesa(s) obtida com sucesso." :
-                    "Nenhuma Mesa encontrada.";
-                _response.Data = tablesDTO;
+                _response.Message = usersDTO.Any() ?
+                    "Lista do(s) Usuário(s) obtida com sucesso." :
+                    "Nenhum Usuário encontrado.";
+                _response.Data = usersDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.SetError();
-                _response.Message = "Não foi possível adquirir a lista da(s) Mesa(s)!";
+                _response.Message = "Não foi possível adquirir a lista do(s) Usuário(s)!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        [HttpGet("{id:int}", Name = "GetTable")]
-        public async Task<ActionResult<TableDTO>> GetById(int id)
+        [HttpGet("{id:int}", Name = "GetUser")]
+        public async Task<ActionResult<UserDTO>> GetById(int id)
         {
             try
             {
-                var tableDTO = await _tableService.GetById(id);
-                if (tableDTO is null)
+                var userDTO = await _userService.GetById(id);
+                if (userDTO is null)
                 {
                     _response.SetNotFound();
-                    _response.Message = "Mesa não encontrada!";
-                    _response.Data = tableDTO;
+                    _response.Message = "Usuário não encontrado!";
+                    _response.Data = userDTO;
                     return NotFound(_response);
                 };
 
                 _response.SetSuccess();
-                _response.Message = "Mesa " + tableDTO.CodeTable + " obtida com sucesso.";
-                _response.Data = tableDTO;
+                _response.Message = "Usuário " + userDTO.NameUser + " obtido com sucesso.";
+                _response.Data = userDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.SetError();
-                _response.Message = "Não foi possível adquirir a Mesa informada!";
+                _response.Message = "Não foi possível adquirir o Usuário informado!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
         [HttpPost()]
-        public async Task<ActionResult> Post([FromBody] TableDTO tableDTO)
+        public async Task<ActionResult> Post([FromBody] UserDTO userDTO)
         {
-            if (tableDTO is null)
+            if (userDTO is null)
             {
                 _response.SetInvalid();
                 _response.Message = "Dado(s) inválido(s)!";
-                _response.Data = tableDTO;
+                _response.Data = userDTO;
                 return BadRequest(_response);
             }
-            tableDTO.Id = 0;
+            userDTO.Id = 0;
 
             try
             {
-                var restaurantDTO = await _restaurantService.GetById(tableDTO.IdRestaurant);
-                if (restaurantDTO is null)
-                {
-                    _response.SetNotFound();
-                    _response.Message = "Dado(s) com conflito!";
-                    _response.Data = new { errorIdRestaurant = "O Restaurante informado não existe!" };
-                    return NotFound(_response);
-                }
-
                 dynamic errors = new ExpandoObject();
                 var hasErrors = false;
 
-                CheckDatas(tableDTO, ref errors, ref hasErrors);
+                CheckDatas(userDTO, ref errors, ref hasErrors);
 
                 if (hasErrors)
                 {
@@ -111,8 +99,8 @@ namespace backend.Controllers
                     return BadRequest(_response);
                 }
 
-                var tablesDTO = await _tableService.GetTablesRelatedRestaurant(tableDTO.IdRestaurant);
-                CheckDuplicates(tablesDTO, tableDTO, ref errors, ref hasErrors);
+                var usersDTO = await _userService.GetAll();
+                CheckDuplicates(usersDTO, userDTO, ref errors, ref hasErrors);
 
                 if (hasErrors)
                 {
@@ -122,57 +110,48 @@ namespace backend.Controllers
                     return BadRequest(_response);
                 }
 
-                await _tableService.Create(tableDTO);
+                await _userService.Create(userDTO);
 
                 _response.SetSuccess();
-                _response.Message = "Mesa" + tableDTO.CodeTable + " cadastrada com sucesso.";
-                _response.Data = tableDTO;
+                _response.Message = "Usuário " + userDTO.NameUser + " cadastrado com sucesso.";
+                _response.Data = userDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.SetError();
-                _response.Message = "Não foi possível cadastrar a Mesa!";
+                _response.Message = "Não foi possível cadastrar o Usuário!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
         [HttpPut()]
-        public async Task<ActionResult> Put([FromBody] TableDTO tableDTO)
+        public async Task<ActionResult> Put([FromBody] UserDTO userDTO)
         {
-            if (tableDTO is null)
+            if (userDTO is null)
             {
                 _response.SetInvalid();
                 _response.Message = "Dado(s) inválido(s)!";
-                _response.Data = tableDTO;
+                _response.Data = userDTO;
                 return BadRequest(_response);
             }
 
             try
             {
-                var existingTableDTO = await _tableService.GetById(tableDTO.Id);
-                if (existingTableDTO is null)
+                var existingUserDTO = await _userService.GetById(userDTO.Id);
+                if (existingUserDTO is null)
                 {
                     _response.SetNotFound();
                     _response.Message = "Dado(s) com conflito!";
-                    _response.Data = new { errorId = "A Mesa informada não existe!" };
-                    return NotFound(_response);
-                }
-
-                var restaurantDTO = await _restaurantService.GetById(tableDTO.IdRestaurant);
-                if (restaurantDTO is null)
-                {
-                    _response.SetNotFound();
-                    _response.Message = "Dado(s) com conflito!";
-                    _response.Data = new { errorIdRestaurant = "O Restaurante informado não existe!" };
+                    _response.Data = new { errorId = "O Usuário informado não existe!" };
                     return NotFound(_response);
                 }
 
                 dynamic errors = new ExpandoObject();
                 var hasErrors = false;
 
-                CheckDatas(tableDTO, ref errors, ref hasErrors);
+                CheckDatas(userDTO, ref errors, ref hasErrors);
 
                 if (hasErrors)
                 {
@@ -182,8 +161,8 @@ namespace backend.Controllers
                     return BadRequest(_response);
                 }
 
-                var tablesDTO = await _tableService.GetTablesRelatedRestaurant(tableDTO.IdRestaurant);
-                CheckDuplicates(tablesDTO, tableDTO, ref errors, ref hasErrors);
+                var usersDTO = await _userService.GetAll();
+                CheckDuplicates(usersDTO, userDTO, ref errors, ref hasErrors);
 
                 if (hasErrors)
                 {
@@ -193,79 +172,85 @@ namespace backend.Controllers
                     return BadRequest(_response);
                 }
 
-                await _tableService.Update(tableDTO);
+                await _userService.Update(userDTO);
 
                 _response.SetSuccess();
-                _response.Message = "Mesa " + tableDTO.CodeTable + " alterada com sucesso.";
-                _response.Data = tableDTO;
+                _response.Message = "Usuário " + userDTO.NameUser + " alterado com sucesso.";
+                _response.Data = userDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.SetError();
-                _response.Message = "Não foi possível alterar a Mesa!";
+                _response.Message = "Não foi possível alterar o Usuário!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<TableDTO>> Delete(int id)
+        public async Task<ActionResult<UserDTO>> Delete(int id)
         {
             try
             {
-                var tableDTO = await _tableService.GetById(id);
-                if (tableDTO is null)
+                var userDTO = await _userService.GetById(id);
+                if (userDTO is null)
                 {
                     _response.SetNotFound();
                     _response.Message = "Dado com conflito!";
-                    _response.Data = new { errorId = "TMesa não encontrada!" };
+                    _response.Data = new { errorId = "Usuário não encontrado!" };
                     return NotFound(_response);
                 }
 
-                await _tableService.Delete(id);
+                await _userService.Delete(id);
 
                 _response.SetSuccess();
-                _response.Message = "Mesa " + tableDTO.CodeTable + " excluída com sucesso.";
-                _response.Data = tableDTO;
+                _response.Message = "Usuário " + userDTO.NameUser + " excluído com sucesso.";
+                _response.Data = userDTO;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
                 _response.SetError();
-                _response.Message = "Não foi possível excluir a Mesa!";
+                _response.Message = "Não foi possível excluir o Usuário!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }
         }
 
-        private static void CheckDatas(TableDTO tableDTO, ref dynamic errors, ref bool hasErrors)
+        private static void CheckDatas(UserDTO userDTO, ref dynamic errors, ref bool hasErrors)
         {
-            if (tableDTO.CapacityPersons >= 100)
+            if (!userDTO.CheckValidPhone())
             {
-                errors.errorCapacityPersons = "Não é possível uma Mesa possuir capacidade para mais de 100 pessoas!";
+                errors.errorPhoneUser = "Número inválido!";
                 hasErrors = true;
             }
 
-            if ((double)tableDTO.ValueTable >= 100000.0)
+            int status = userDTO.CheckValidEmail();
+            if (status == -1)
             {
-                errors.errorValueTable = "A taxa por hora reservada não pode ser superior a R$ 100.000,00!";
+                errors.errorEmailUser = "E-mail inválido!";
+                hasErrors = true;
+            }
+            else if (status == -2)
+            {
+                errors.errorEmailUser = "Domínio inválido!";
                 hasErrors = true;
             }
         }
 
-        private static void CheckDuplicates(IEnumerable<TableDTO> tablesDTO, TableDTO tableDTO, ref dynamic errors, ref bool hasErrors)
+        private static void CheckDuplicates(IEnumerable<UserDTO> usersDTO, UserDTO userDTO, ref dynamic errors, ref bool hasErrors)
         {
-            foreach (var table in tablesDTO)
+            foreach (var user in usersDTO)
             {
-                if (tableDTO.Id == table.Id)
+                if (userDTO.Id == user.Id)
                 {
                     continue;
                 }
 
-                if (Operator.CompareString(tableDTO.CodeTable, table.CodeTable))
+                if (Operator.CompareString(userDTO.EmailUser, user.EmailUser))
                 {
-                    errors.errorNomeEstado = "Já existe a Mesa " + tableDTO.CodeTable + "!";
+                    errors.errorEmailUser = "O e-mail " + userDTO.EmailUser + " já está sendo utilizado!";
                     hasErrors = true;
 
                     break;

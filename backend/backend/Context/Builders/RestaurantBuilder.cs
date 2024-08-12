@@ -13,11 +13,12 @@ namespace backend.Context.Builders
             modelBuilder.Entity<RestaurantModel>().Property(r => r.NameRestaurant).HasMaxLength(100).IsRequired();
             modelBuilder.Entity<RestaurantModel>().Property(r => r.EmailRestaurant).HasMaxLength(100).IsRequired();
             modelBuilder.Entity<RestaurantModel>().Property(r => r.PhoneRestaurant).HasMaxLength(15).IsRequired();
+            modelBuilder.Entity<RestaurantModel>().Property(r => r.ImageRestaurant).HasConversion(images => string.Join(";", images), images => images.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList());
 
 
             // Inserções
             //modelBuilder.Entity<RestaurantModel>().HasData(
-                
+
             //);
         }
     }

@@ -8,6 +8,9 @@ namespace backend.Objects.Models.Entities
         [Column("iduser")]
         public int Id { get; set; }
 
+        [Column("imageuser")]
+        public string ImageUser { get; set; }
+
         [Column("nameuser")]
         public string NameUser { get; set; }
 

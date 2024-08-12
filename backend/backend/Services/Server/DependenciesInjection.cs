@@ -17,5 +17,12 @@ namespace backend.Services.Server
             services.AddScoped<ITableRepository, TableRepository>();
             services.AddScoped<ITableService, TableService>();
         }
+
+        public static void AddUserDependencies(this IServiceCollection services)
+        {
+            // Dependência: Usuário
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
+        }
     }
 }
