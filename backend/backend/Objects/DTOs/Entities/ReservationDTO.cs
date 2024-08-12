@@ -8,7 +8,14 @@ namespace backend.Objects.DTOs.Entities
         public int Id { get; set; }
 
         [Required(ErrorMessage = "A data é requerida!")]
-        public DateTime DateReservation { get; set; }
+        public string DateReservation { get; set; }
+
+        [Required(ErrorMessage = "A hora de início é requerida!")]
+        public string HourBegin { get; set; }
+
+        public string? HourFinish { get; set; }
+
+        public string? TimeDuration { get; set; }
 
         [Required(ErrorMessage = "O valor é requerido!")]
         public decimal ValueReservation
@@ -18,15 +25,15 @@ namespace backend.Objects.DTOs.Entities
         }
         private decimal _valueReservation;
 
-        public DateTime? CreateAt { get; set; }
-
-        public DateTime? UpdateAt { get; set; }
-
         [Required(ErrorMessage = "O usuário é requerido!")]
         public int IdUser { get; set; }
 
         [Required(ErrorMessage = "A mesa é requerida!")]
         public int IdTable { get; set; }
+
+        public DateTime? CreateAt { get; set; }
+
+        public DateTime? UpdateAt { get; set; }
 
 
         [JsonIgnore]

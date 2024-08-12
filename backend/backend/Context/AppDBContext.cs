@@ -14,6 +14,7 @@ public class AppDBContext : DbContext
 
     // Conjunto: Usuário
     public DbSet<UserModel> User { get; set; }
+    public DbSet<ReservationModel> Reservation { get; set; }
 
     // Fluent API
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,5 +27,6 @@ public class AppDBContext : DbContext
 
         // Entidades de Usuário:
         UserBuilder.Build(modelBuilder);
+        ReservationBuilder.Build(modelBuilder);
     }
 }

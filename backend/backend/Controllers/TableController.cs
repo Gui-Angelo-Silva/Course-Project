@@ -76,7 +76,7 @@ namespace backend.Controllers
         }
 
         [HttpPost()]
-        public async Task<ActionResult> Post([FromBody] TableDTO tableDTO)
+        public async Task<ActionResult> Create([FromBody] TableDTO tableDTO)
         {
             if (tableDTO is null)
             {
@@ -125,7 +125,7 @@ namespace backend.Controllers
                 await _tableService.Create(tableDTO);
 
                 _response.SetSuccess();
-                _response.Message = "Mesa" + tableDTO.CodeTable + " cadastrada com sucesso.";
+                _response.Message = "Mesa " + tableDTO.CodeTable + " cadastrada com sucesso.";
                 _response.Data = tableDTO;
                 return Ok(_response);
             }
@@ -139,7 +139,7 @@ namespace backend.Controllers
         }
 
         [HttpPut()]
-        public async Task<ActionResult> Put([FromBody] TableDTO tableDTO)
+        public async Task<ActionResult> Update([FromBody] TableDTO tableDTO)
         {
             if (tableDTO is null)
             {
@@ -219,7 +219,7 @@ namespace backend.Controllers
                 {
                     _response.SetNotFound();
                     _response.Message = "Dado com conflito!";
-                    _response.Data = new { errorId = "TMesa não encontrada!" };
+                    _response.Data = new { errorId = "Mesa não encontrada!" };
                     return NotFound(_response);
                 }
 

@@ -23,6 +23,9 @@ namespace backend.Services.Server
             // Dependência: Usuário
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<IReservationRepository, ReservationRepository>();
+            services.AddScoped<IReservationService, ReservationService>();
         }
     }
 }
