@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Objects.DTOs.Entities;
 using backend.Objects.Server;
 using backend.Objects.Utilities;
-using backend.Services.Entities;
 using System.Dynamic;
 
 namespace backend.Controllers
@@ -73,7 +72,7 @@ namespace backend.Controllers
         }
 
         [HttpPost()]
-        public async Task<ActionResult> Post([FromBody] UserDTO userDTO)
+        public async Task<ActionResult> Create([FromBody] UserDTO userDTO)
         {
             if (userDTO is null)
             {
@@ -127,7 +126,7 @@ namespace backend.Controllers
         }
 
         [HttpPut()]
-        public async Task<ActionResult> Put([FromBody] UserDTO userDTO)
+        public async Task<ActionResult> Update([FromBody] UserDTO userDTO)
         {
             if (userDTO is null)
             {

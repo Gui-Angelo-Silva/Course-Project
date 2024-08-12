@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Objects.DTOs.Entities;
 using System.Dynamic;
 using backend.Objects.Server;
-using backend.Services.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using backend.Objects.Utilities;
 
 namespace backend.Controllers
@@ -86,6 +84,7 @@ namespace backend.Controllers
                 return BadRequest(_response);
             }
             tableDTO.Id = 0;
+            tableDTO.AvailableTable = true;
 
             try
             {
@@ -111,8 +110,8 @@ namespace backend.Controllers
                     return BadRequest(_response);
                 }
 
-                var tablesDTO = await _tableService.GetTablesRelatedRestaurant(tableDTO.IdRestaurant);
-                CheckDuplicates(tablesDTO, tableDTO, ref errors, ref hasErrors);
+                var tablesRelatedRestaurantDTO = await _tableService.GetTablesRelatedRestaurant(tableDTO.IdRestaurant);
+                CheckDuplicates(tablesRelatedRestaurantDTO, tableDTO, ref errors, ref hasErrors);
 
                 if (hasErrors)
                 {
@@ -158,7 +157,7 @@ namespace backend.Controllers
                     _response.Message = "Dado(s) com conflito!";
                     _response.Data = new { errorId = "A Mesa informada não existe!" };
                     return NotFound(_response);
-                }
+                } tableDTO.AvailableTable = existingTableDTO.AvailableTable;
 
                 var restaurantDTO = await _restaurantService.GetById(tableDTO.IdRestaurant);
                 if (restaurantDTO is null)
@@ -182,8 +181,8 @@ namespace backend.Controllers
                     return BadRequest(_response);
                 }
 
-                var tablesDTO = await _tableService.GetTablesRelatedRestaurant(tableDTO.IdRestaurant);
-                CheckDuplicates(tablesDTO, tableDTO, ref errors, ref hasErrors);
+                var tablesRelatedRestaurantDTO = await _tableService.GetTablesRelatedRestaurant(tableDTO.IdRestaurant);
+                CheckDuplicates(tablesRelatedRestaurantDTO, tableDTO, ref errors, ref hasErrors);
 
                 if (hasErrors)
                 {
@@ -204,6 +203,84 @@ namespace backend.Controllers
             {
                 _response.SetError();
                 _response.Message = "Não foi possível alterar a Mesa!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPatch("{id:int}/AvailableTable")]
+        public async Task<ActionResult> AvailableTable(int id)
+        {
+            try
+            {
+                var tableDTO = await _tableService.GetById(id);
+                if (tableDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = new { errorId = "A Mesa informada não existe!" };
+                    return NotFound(_response);
+                }
+
+                if (tableDTO.AvailableTable)
+                {
+                    _response.SetSuccess();
+                    _response.Message = "A Mesa " + tableDTO.CodeTable + " já está disponível.";
+                    _response.Data = tableDTO;
+                    return Ok(_response);
+                }
+
+                tableDTO.AvailableTable = true;
+                await _tableService.Update(tableDTO);
+
+                _response.SetSuccess();
+                _response.Message = "Mesa " + tableDTO.CodeTable + " disponibilizada com sucesso.";
+                _response.Data = tableDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível disponibilizar a Mesa!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPatch("{id:int}/BlockTable")]
+        public async Task<ActionResult> BlockTable(int id)
+        {
+            try
+            {
+                var tableDTO = await _tableService.GetById(id);
+                if (tableDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = new { errorId = "A Mesa informada não existe!" };
+                    return NotFound(_response);
+                }
+
+                if (!tableDTO.AvailableTable)
+                {
+                    _response.SetSuccess();
+                    _response.Message = "A Mesa " + tableDTO.CodeTable + " já está bloqueada.";
+                    _response.Data = tableDTO;
+                    return Ok(_response);
+                }
+
+                tableDTO.AvailableTable = false;
+                await _tableService.Update(tableDTO);
+
+                _response.SetSuccess();
+                _response.Message = "Mesa " + tableDTO.CodeTable + " bloqueada com sucesso.";
+                _response.Data = tableDTO;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível bloquear a Mesa!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
             }

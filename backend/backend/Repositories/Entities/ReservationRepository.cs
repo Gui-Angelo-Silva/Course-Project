@@ -24,6 +24,11 @@ public class ReservationRepository : IReservationRepository
         return await _dbContext.Reservation.AsNoTracking().Where(r => r.IdUser == idUser).ToListAsync();
     }
 
+    public async Task<IEnumerable<ReservationModel>> GetReservationsRelatedTable(int idTable)
+    {
+        return await _dbContext.Reservation.AsNoTracking().Where(r => r.IdTable == idTable).ToListAsync();
+    }
+
     public async Task<ReservationModel> GetById(int id)
     {
         return await _dbContext.Reservation.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);

@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Objects.DTOs.Entities;
 using System.Dynamic;
 using backend.Objects.Server;
-using backend.Services.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using backend.Objects.Utilities;
 
 namespace backend.Controllers
@@ -78,7 +76,7 @@ namespace backend.Controllers
         }
 
         [HttpPost()]
-        public async Task<ActionResult> Post([FromBody] ReservationDTO reservationDTO)
+        public async Task<ActionResult> Create([FromBody] ReservationDTO reservationDTO)
         {
             if (reservationDTO is null)
             {
@@ -100,11 +98,31 @@ namespace backend.Controllers
                     return NotFound(_response);
                 }
 
+                var tableDTO = await _tableService.GetById(reservationDTO.IdTable);
+                if (tableDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = new { errorIdTable = "A Mesa informada não existe!" };
+                    return NotFound(_response);
+                }
+
                 dynamic errors = new ExpandoObject();
                 var hasErrors = false;
 
-                var tableDTO = await _tableService.GetById(reservationDTO.IdTable);
-                CheckDatas(tableDTO, reservationDTO, ref errors, ref hasErrors);
+                var reservationsRelatedTableDTO = await _reservationService.GetReservationsRelatedTable(reservationDTO.IdTable);
+                CheckDatas(tableDTO, reservationsRelatedTableDTO, reservationDTO, ref errors, ref hasErrors);
+
+                if (hasErrors)
+                {
+                    _response.SetConflict();
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = errors;
+                    return BadRequest(_response);
+                }
+
+                var reservationsRelatedUserDTO = await _reservationService.GetReservationsRelatedUser(reservationDTO.IdUser);
+                CheckDuplicates(reservationsRelatedUserDTO, reservationDTO, ref errors, ref hasErrors);
 
                 if (hasErrors)
                 {
@@ -131,7 +149,7 @@ namespace backend.Controllers
         }
 
         [HttpPut()]
-        public async Task<ActionResult> Put([FromBody] ReservationDTO reservationDTO)
+        public async Task<ActionResult> Update([FromBody] ReservationDTO reservationDTO)
         {
             if (reservationDTO is null)
             {
@@ -161,11 +179,31 @@ namespace backend.Controllers
                     return NotFound(_response);
                 }
 
+                var tableDTO = await _tableService.GetById(reservationDTO.IdTable);
+                if (tableDTO is null)
+                {
+                    _response.SetNotFound();
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = new { errorIdTable = "A Mesa informada não existe!" };
+                    return NotFound(_response);
+                }
+
                 dynamic errors = new ExpandoObject();
                 var hasErrors = false;
 
-                var tableDTO = await _tableService.GetById(reservationDTO.IdTable);
-                CheckDatas(tableDTO, reservationDTO, ref errors, ref hasErrors);
+                var reservationsRelatedTableDTO = await _reservationService.GetReservationsRelatedTable(reservationDTO.IdTable);
+                CheckDatas(tableDTO, reservationsRelatedTableDTO, reservationDTO, ref errors, ref hasErrors);
+
+                if (hasErrors)
+                {
+                    _response.SetConflict();
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = errors;
+                    return BadRequest(_response);
+                }
+
+                var reservationsRelatedUserDTO = await _reservationService.GetReservationsRelatedUser(reservationDTO.IdUser);
+                CheckDuplicates(reservationsRelatedUserDTO, reservationDTO, ref errors, ref hasErrors);
 
                 if (hasErrors)
                 {
@@ -221,12 +259,38 @@ namespace backend.Controllers
             }
         }
 
-        private static void CheckDatas(TableDTO table, ReservationDTO reservationDTO, ref dynamic errors, ref bool hasErrors)
+        private static void CheckDatas(TableDTO table, IEnumerable<ReservationDTO> reservationsDTO, ReservationDTO reservationDTO, ref dynamic errors, ref bool hasErrors)
         {
-            if (table.ReservedTable)
+            if (!table.AvailableTable)
             {
-                errors.errorIdTable = "A Mesa " + table.CodeTable + " já está reservada!";
+                errors.errorIdTable = "A Mesa " + table.CodeTable + " está indisponível para reserva!";
                 hasErrors = true;
+            }
+
+            reservationDTO = reservationsDTO.FirstOrDefault(reservation => reservation.IdUser != reservationDTO.IdUser && Operator.CompareString(reservationDTO.DateReservation, reservation.DateReservation));
+            if (reservationDTO is not null)
+            {
+                errors.errorIdTable = "A Mesa " + table.CodeTable + " está reservada!";
+                hasErrors = true;
+            }
+        }
+
+        private static void CheckDuplicates(IEnumerable<ReservationDTO> reservationsDTO, ReservationDTO reservationDTO, ref dynamic errors, ref bool hasErrors)
+        {
+            foreach (var reservation in reservationsDTO)
+            {
+                if (reservationDTO.Id == reservation.Id)
+                {
+                    continue;
+                }
+
+                if (reservationDTO.IdTable == reservation.IdTable && Operator.CompareString(reservationDTO.DateReservation, reservation.DateReservation))
+                {
+                    errors.errorDateReservation = "Você já reservou a Mesa para " + reservationDTO.DateReservation + "!";
+                    hasErrors = true;
+
+                    break;
+                }
             }
         }
     }

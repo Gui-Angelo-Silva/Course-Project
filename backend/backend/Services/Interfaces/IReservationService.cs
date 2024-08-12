@@ -7,6 +7,7 @@ namespace backend.Services.Interfaces
     {
         Task<IEnumerable<ReservationDTO>> GetAll();
         Task<IEnumerable<ReservationDTO>> GetReservationsRelatedUser(int idUser);
+        Task<IEnumerable<ReservationDTO>> GetReservationsRelatedTable(int idTable);
         Task<ReservationDTO> GetById(int id);
         Task Create(ReservationDTO reservationDTO);
         Task Update(ReservationDTO reservationDTO);

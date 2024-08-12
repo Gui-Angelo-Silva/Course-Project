@@ -11,9 +11,6 @@ namespace backend.Objects.Models.Entities
         [Column("imagerestaurant")]
         public List<string> ImageRestaurant { get; set; }
 
-        [Column("namefranchise")]
-        public string NameFranchise { get; set; }
-
         [Column("namerestaurant")]
         public string NameRestaurant { get; set; }
 

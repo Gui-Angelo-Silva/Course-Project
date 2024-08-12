@@ -70,7 +70,7 @@ namespace backend.Controllers
         }
 
         [HttpPost()]
-        public async Task<ActionResult> Post([FromBody] RestaurantDTO restaurantDTO)
+        public async Task<ActionResult> Create([FromBody] RestaurantDTO restaurantDTO)
         {
             if (restaurantDTO is null)
             {
@@ -100,7 +100,7 @@ namespace backend.Controllers
         }
 
         [HttpPut()]
-        public async Task<ActionResult> Put([FromBody] RestaurantDTO restaurantDTO)
+        public async Task<ActionResult> Update([FromBody] RestaurantDTO restaurantDTO)
         {
             if (restaurantDTO is null)
             {

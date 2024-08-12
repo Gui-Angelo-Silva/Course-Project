@@ -29,6 +29,12 @@ public class ReservationService : IReservationService
         return _mapper.Map<IEnumerable<ReservationDTO>>(reservations);
     }
 
+    public async Task<IEnumerable<ReservationDTO>> GetReservationsRelatedTable(int idTable)
+    {
+        var reservations = await _reservationRepository.GetReservationsRelatedTable(idTable);
+        return _mapper.Map<IEnumerable<ReservationDTO>>(reservations);
+    }
+
     public async Task<ReservationDTO> GetById(int id)
     {
         var reservation = await _reservationRepository.GetById(id);

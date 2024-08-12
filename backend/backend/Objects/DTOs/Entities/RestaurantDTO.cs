@@ -9,11 +9,6 @@ namespace backend.Objects.DTOs.Entities
 
         public List<string>? ImageRestaurant { get; set; }
 
-        [Required(ErrorMessage = "A franquia é requerida!")]
-        [MinLength(1)]
-        [MaxLength(100)]
-        public string NameFranchise { get; set; }
-
         [Required(ErrorMessage = "O nome é requerido!")]
         [MinLength(1)]
         [MaxLength(100)]

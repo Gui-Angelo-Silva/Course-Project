@@ -9,7 +9,6 @@ namespace backend.Context.Builders
         {
             // Builder
             modelBuilder.Entity<RestaurantModel>().HasKey(r => r.Id);
-            modelBuilder.Entity<RestaurantModel>().Property(r => r.NameFranchise).HasMaxLength(100).IsRequired();
             modelBuilder.Entity<RestaurantModel>().Property(r => r.NameRestaurant).HasMaxLength(100).IsRequired();
             modelBuilder.Entity<RestaurantModel>().Property(r => r.EmailRestaurant).HasMaxLength(100).IsRequired();
             modelBuilder.Entity<RestaurantModel>().Property(r => r.PhoneRestaurant).HasMaxLength(15).IsRequired();

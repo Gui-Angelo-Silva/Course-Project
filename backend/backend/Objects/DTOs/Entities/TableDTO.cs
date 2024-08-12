@@ -23,7 +23,7 @@ namespace backend.Objects.DTOs.Entities
         }
         private decimal _valueTable;
 
-        public bool ReservedTable { get; set; }
+        public bool AvailableTable { get; set; }
 
         [Required(ErrorMessage = "O restaurante é requerido!")]
         public int IdRestaurant { get; set; }

@@ -17,7 +17,7 @@ namespace backend.Objects.Models.Entities
         [Column("valuetable")]
         public decimal ValueTable { get; set; }
 
-        public bool ReservedTable { get; set; }
+        public bool AvailableTable { get; set; }
 
         [ForeignKey("idrestaurant")]
         public int IdRestaurant { get; set; }
