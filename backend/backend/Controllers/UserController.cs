@@ -125,6 +125,81 @@ namespace backend.Controllers
             }
         }
 
+        [HttpPost()]
+        public async Task<ActionResult> Login([FromBody] Login login)
+        {
+            if (login is null)
+            {
+                _response.SetInvalid();
+                _response.Message = "Dado(s) inválido(s)!";
+                _response.Data = login;
+                return BadRequest(_response);
+            }
+
+            try
+            {
+                var userDTO = await _userService.Login(login);
+                if (userDTO is null)
+                {
+                    _response.SetUnauthorized();
+                    _response.Message = "Login inválido!";
+                    _response.Data = new { errorLogin = "Login inválido!" };
+                    return BadRequest(_response);
+                }
+
+                var token = new Token(); 
+                token.GenerateToken(userDTO.EmailUser);
+
+                _response.SetSuccess();
+                _response.Message = "Login realizado com sucesso.";
+                _response.Data = token;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível realizar o Login!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpPost()]
+        public async Task<ActionResult> Validate([FromBody] Token token)
+        {
+            if (token is null)
+            {
+                _response.SetInvalid();
+                _response.Message = "Dado inválido!";
+                _response.Data = token;
+                return BadRequest(_response);
+            }
+
+            try
+            {
+                if (!token.ValidateToken())
+                {
+                    _response.SetUnauthorized();
+                    _response.Message = "Token inválido!";
+                    _response.Data = new { errorToken = "Token inválido!" };
+                    return BadRequest(_response);
+                }
+
+                _response.SetSuccess();
+                _response.Message = "Token validado com sucesso.";
+                _response.Data = token;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError();
+                _response.Message = "Não foi possível validar o Token!";
+                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+
         [HttpPut()]
         public async Task<ActionResult> Update([FromBody] UserDTO userDTO)
         {

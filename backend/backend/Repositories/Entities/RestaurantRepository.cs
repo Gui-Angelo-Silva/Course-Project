@@ -19,16 +19,6 @@ public class RestaurantRepository : IRestaurantRepository
         return await _dbContext.Restaurant.AsNoTracking().ToListAsync();
     }
 
-    public async Task<IEnumerable<RestaurantModel>> GetReservationRelatedUser(int idUser)
-    {
-        return await _dbContext.Restaurant.AsNoTracking().Where(r => r.IdUser == idUser).ToListAsync();
-    }
-
-    public async Task<IEnumerable<RestaurantModel>> GetReservationRelatedTable(int idTable)
-    {
-        return await _dbContext.Restaurant.AsNoTracking().Where(r => r.IdTable == idTable).ToListAsync();
-    }
-
     public async Task<RestaurantModel> GetById(int id)
     {
         return await _dbContext.Restaurant.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);

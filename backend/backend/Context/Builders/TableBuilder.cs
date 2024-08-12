@@ -11,7 +11,7 @@ namespace backend.Context.Builders
             modelBuilder.Entity<TableModel>().HasKey(t => t.Id);
             modelBuilder.Entity<TableModel>().Property(t => t.CodeTable).HasMaxLength(20).IsRequired();
             modelBuilder.Entity<TableModel>().Property(t => t.CapacityPersons).IsRequired();
-            modelBuilder.Entity<TableModel>().Property(t => t.ValueTable).HasColumnType("decimal(7,2)").IsRequire();
+            modelBuilder.Entity<TableModel>().Property(t => t.ValueTable).HasColumnType("decimal(7,2)").IsRequired();
             modelBuilder.Entity<TableModel>().Property(t => t.AvailableTable).IsRequired();
             modelBuilder.Entity<TableModel>().Property(t => t.IdRestaurant).IsRequired();
 

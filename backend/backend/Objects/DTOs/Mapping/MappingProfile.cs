@@ -9,7 +9,7 @@ namespace backend.Objects.DTO.Mappings
         public MappingProfile()
         {
             // Entidades de Usuários:
-            CreateMap<UserDTO, UserModel>().ReverseMap();
+            CreateMap<Login, UserModel>().ReverseMap();
             CreateMap<ReservationDTO, ReservationModel>().ReverseMap();
 
             // Entidades de Restaurante:

@@ -37,7 +37,7 @@ namespace backend.Objects.DTOs.Entities
 
 
         [JsonIgnore]
-        public UserDTO? UserDTO { get; set; }
+        public Login? UserDTO { get; set; }
 
         [JsonIgnore]
         public TableDTO? TableDTO { get; set; }

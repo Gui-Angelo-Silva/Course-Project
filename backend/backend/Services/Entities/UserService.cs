@@ -29,6 +29,12 @@ public class UserService : IUserService
         return _mapper.Map<UserDTO>(user);
     }
 
+    public async Task<UserDTO> Login(Login login)
+    {
+        var user = await _userRepository.Login(login);
+        return _mapper.Map<UserDTO>(user);
+    }
+
     public async Task Create(UserDTO userDTO)
     {
         var user = _mapper.Map<UserModel>(userDTO);

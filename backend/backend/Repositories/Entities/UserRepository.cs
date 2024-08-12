@@ -2,6 +2,8 @@
 using backend.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using backend.Objects.Models.Entities;
+using backend.Objects.DTOs.Entities;
+using backend.Objects.Utilities;
 
 namespace backend.Repositories.Entities;
 public class UserRepository : IUserRepository
@@ -22,6 +24,11 @@ public class UserRepository : IUserRepository
     public async Task<UserModel> GetById(int id)
     {
         return await _dbContext.User.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+    }
+
+    public async Task<UserModel> Login(Login login)
+    {
+        return await _dbContext.User.AsNoTracking().FirstOrDefaultAsync(u => u.EmailUser == login.Email && u.PasswordUser == login.Password);
     }
 
     public async Task<UserModel> Create(UserModel user)

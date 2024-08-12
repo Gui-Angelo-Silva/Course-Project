@@ -26,9 +26,9 @@ namespace backend.Objects.DTOs.Entities
         }
         private string _emailUser;
 
+        [Required(ErrorMessage = "A senha é requerida!")]
         [MinLength(8)]
         [MaxLength(128)]
-        [Required(ErrorMessage = "A senha é requerida!")]
         public string PasswordUser { get; set; }
 
         [Required(ErrorMessage = "O telefone é requerido!")]
