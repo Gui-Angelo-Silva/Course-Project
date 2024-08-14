@@ -267,7 +267,7 @@ namespace backend.Controllers
                 hasErrors = true;
             }
 
-            reservationDTO = reservationsDTO.FirstOrDefault(reservation => reservation.IdUser != reservationDTO.IdUser && Operator.CompareString(reservationDTO.DateReservation, reservation.DateReservation));
+            reservationDTO = reservationsDTO.FirstOrDefault(reservation => reservation.IdUser != reservationDTO.IdUser && Validator.CompareString(reservationDTO.DateReservation, reservation.DateReservation));
             if (reservationDTO is not null)
             {
                 errors.errorIdTable = "A Mesa " + table.CodeTable + " está reservada!";
@@ -284,7 +284,7 @@ namespace backend.Controllers
                     continue;
                 }
 
-                if (reservationDTO.IdTable == reservation.IdTable && Operator.CompareString(reservationDTO.DateReservation, reservation.DateReservation))
+                if (reservationDTO.IdTable == reservation.IdTable && Validator.CompareString(reservationDTO.DateReservation, reservation.DateReservation))
                 {
                     errors.errorDateReservation = "Você já reservou a Mesa para " + reservationDTO.DateReservation + "!";
                     hasErrors = true;

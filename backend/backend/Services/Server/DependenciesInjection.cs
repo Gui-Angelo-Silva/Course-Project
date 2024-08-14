@@ -16,6 +16,14 @@ namespace backend.Services.Server
             // Dependência: Mesa
             services.AddScoped<ITableRepository, TableRepository>();
             services.AddScoped<ITableService, TableService>();
+
+            // Dependência: Temática
+            services.AddScoped<IThematicRepository, ThematicRepository>();
+            services.AddScoped<IThematicService, ThematicService>();
+
+            // Dependência: Temática de Restaurante
+            services.AddScoped<IThematicRestaurantRepository, ThematicRestaurantRepository>();
+            services.AddScoped<IThematicRestaurantService, ThematicRestaurantService>();
         }
 
         public static void AddUserDependencies(this IServiceCollection services)

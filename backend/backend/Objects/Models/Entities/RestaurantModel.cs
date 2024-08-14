@@ -21,6 +21,7 @@ namespace backend.Objects.Models.Entities
         public string PhoneRestaurant { get; set; }
 
 
+        public ICollection<ThematicRestaurantModel>? ThematicsRestaurantModel { get; set; }
         public ICollection<TableModel>? TablesModel { get; set; }
     }
 }

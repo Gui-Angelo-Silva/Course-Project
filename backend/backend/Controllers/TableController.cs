@@ -340,7 +340,7 @@ namespace backend.Controllers
                     continue;
                 }
 
-                if (Operator.CompareString(tableDTO.CodeTable, table.CodeTable))
+                if (Validator.CompareString(tableDTO.CodeTable, table.CodeTable))
                 {
                     errors.errorNomeEstado = "Já existe a Mesa " + tableDTO.CodeTable + "!";
                     hasErrors = true;

@@ -27,5 +27,8 @@ namespace backend.Objects.DTOs.Entities
 
         [JsonIgnore]
         public ICollection<TableDTO>? TablesDTO { get; set; }
+
+        [JsonIgnore]
+        public ICollection<ThematicRestaurantDTO>? ThematicsRestaurantDTO { get; set; }
     }
 }

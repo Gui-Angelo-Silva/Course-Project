@@ -35,16 +35,6 @@ namespace backend.Objects.Utilities
             return new string(text.Where(char.IsDigit).ToArray());
         }
 
-        public static bool CompareString(string str1, string str2)
-        {
-            return string.Equals(str1.RemoveDiacritics(), str2.RemoveDiacritics(), StringComparison.OrdinalIgnoreCase);
-        }
-
-        public static bool IsNumbers(this string text)
-        {
-            return !string.IsNullOrEmpty(text) && Regex.IsMatch(text, @"^\d+$");
-        }
-
         public static string FormatForCurrency(double amount)
         {
             // Converte decimal para string com exatamente duas casas decimais

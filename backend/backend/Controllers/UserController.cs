@@ -297,13 +297,13 @@ namespace backend.Controllers
 
         private static void CheckDatas(UserDTO userDTO, ref dynamic errors, ref bool hasErrors)
         {
-            if (!userDTO.CheckValidPhone())
+            if (!Validator.CheckValidPhone(userDTO.PhoneUser))
             {
                 errors.errorPhoneUser = "Número inválido!";
                 hasErrors = true;
             }
 
-            int status = userDTO.CheckValidEmail();
+            int status = Validator.CheckValidEmail(userDTO.EmailUser);
             if (status == -1)
             {
                 errors.errorEmailUser = "E-mail inválido!";
@@ -325,7 +325,7 @@ namespace backend.Controllers
                     continue;
                 }
 
-                if (Operator.CompareString(userDTO.EmailUser, user.EmailUser))
+                if (Validator.CompareString(userDTO.EmailUser, user.EmailUser))
                 {
                     errors.errorEmailUser = "O e-mail " + userDTO.EmailUser + " já está sendo utilizado!";
                     hasErrors = true;

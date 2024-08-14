@@ -8,13 +8,15 @@ namespace backend.Objects.DTO.Mappings
     {
         public MappingProfile()
         {
-            // Entidades de Usuários:
+            // Entidades de Usuário:
             CreateMap<UserDTO, UserModel>().ReverseMap();
             CreateMap<ReservationDTO, ReservationModel>().ReverseMap();
 
             // Entidades de Restaurante:
             CreateMap<RestaurantDTO, RestaurantModel>().ReverseMap();
             CreateMap<TableDTO, TableModel>().ReverseMap();
+            CreateMap<ThematicDTO, ThematicModel>().ReverseMap();
+            CreateMap<ThematicRestaurantDTO, ThematicRestaurantModel>().ReverseMap();
         }
     }
 }

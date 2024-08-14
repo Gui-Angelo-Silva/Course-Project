@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Objects.DTOs.Entities;
 using backend.Objects.Server;
+using backend.Objects.Utilities;
+using System.Dynamic;
 
 namespace backend.Controllers
 {
@@ -83,6 +85,19 @@ namespace backend.Controllers
 
             try
             {
+                dynamic errors = new ExpandoObject();
+                var hasErrors = false;
+
+                CheckDatas(restaurantDTO, ref errors, ref hasErrors);
+
+                if (hasErrors)
+                {
+                    _response.SetConflict();
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = errors;
+                    return BadRequest(_response);
+                }
+
                 await _restaurantService.Create(restaurantDTO);
 
                 _response.SetSuccess();
@@ -119,6 +134,19 @@ namespace backend.Controllers
                     _response.Message = "Dado(s) com conflito!";
                     _response.Data = new { errorId = "O Restaurante informado não existe!" };
                     return NotFound(_response);
+                }
+
+                dynamic errors = new ExpandoObject();
+                var hasErrors = false;
+
+                CheckDatas(restaurantDTO, ref errors, ref hasErrors);
+
+                if (hasErrors)
+                {
+                    _response.SetConflict();
+                    _response.Message = "Dado(s) com conflito!";
+                    _response.Data = errors;
+                    return BadRequest(_response);
                 }
 
                 await _restaurantService.Update(restaurantDTO);
@@ -164,6 +192,27 @@ namespace backend.Controllers
                 _response.Message = "Não foi possível excluir o Restaurante!";
                 _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
                 return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        private static void CheckDatas(RestaurantDTO restaurantDTO, ref dynamic errors, ref bool hasErrors)
+        {
+            if (!Validator.CheckValidPhone(restaurantDTO.PhoneRestaurant))
+            {
+                errors.errorPhoneRestaurant = "Número inválido!";
+                hasErrors = true;
+            }
+
+            int status = Validator.CheckValidEmail(restaurantDTO.EmailRestaurant);
+            if (status == -1)
+            {
+                errors.errorEmailRestaurant = "E-mail inválido!";
+                hasErrors = true;
+            }
+            else if (status == -2)
+            {
+                errors.errorEmailRestaurant = "Domínio inválido!";
+                hasErrors = true;
             }
         }
     }

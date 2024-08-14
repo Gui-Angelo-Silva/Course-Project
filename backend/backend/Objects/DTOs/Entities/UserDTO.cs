@@ -39,54 +39,5 @@ namespace backend.Objects.DTOs.Entities
 
         [JsonIgnore]
         public ICollection<ReservationDTO>? ReservationsDTO { get; set; }
-
-
-
-        public bool CheckValidPhone()
-        {
-            int phoneLength = Operator.ExtractNumbers(this.PhoneUser).Length;
-            return phoneLength > 9 && phoneLength < 12;
-        }
-
-        public int CheckValidEmail()
-        {
-            // Verifica se há um único "@" e que não está no início ou no final
-            int atCount = this.EmailUser.Count(c => c == '@');
-            bool hasTextBeforeAt = this.EmailUser.IndexOf('@') > 0;
-            bool hasTextAfterAt = this.EmailUser.LastIndexOf('@') < this.EmailUser.Length - 1;
-
-            // Verifica se após o "@" há um "." e se não termina com "."
-            int atPosition = this.EmailUser.IndexOf('@');
-            bool hasDotAfterAt = atPosition >= 0 && this.EmailUser.IndexOf('.', atPosition) > atPosition;
-            bool endsWithDot = this.EmailUser.EndsWith('.');
-
-            // Verificações
-            if (atCount != 1)
-            {
-                return -1; // E-mail inteiro inválido
-            }
-
-            if (!hasTextBeforeAt)
-            {
-                return -1; // Parte antes do @ inválida
-            }
-
-            if (!hasTextAfterAt)
-            {
-                return -2; // Domínio inválido
-            }
-
-            if (!hasDotAfterAt)
-            {
-                return -2; // Domínio inválido
-            }
-
-            if (endsWithDot)
-            {
-                return -1; // E-mail inteiro inválido
-            }
-
-            return 1; // E-mail válido
-        }
     }
 }
