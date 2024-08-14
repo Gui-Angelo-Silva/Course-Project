@@ -19,7 +19,7 @@ namespace backend.Context.Builders
 
             // Inserções
             modelBuilder.Entity<UserModel>().HasData(
-                new UserModel { Id = 1, NameUser = "Master", EmailUser = "master@development.com", PasswordUser = "71f780a111c4a0c1e744c31a1ae05299a3bd32467dd60caddf4a961ff793d181", PhoneUser = "(00) 00000-0000", ImageUser = "" }
+                new UserModel { Id = 1, NameUser = "Master", EmailUser = "master@development.com", PasswordUser = "99db87c3278f5eaa517260eaaa2b4b376be63d7f8a79c0f43992a493a3de8fc9", PhoneUser = "(00) 00000-0000", ImageUser = "" }
             );
         }
     }

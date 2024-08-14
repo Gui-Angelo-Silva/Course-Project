@@ -25,7 +25,7 @@ namespace backend.Context.Builders
 
             // Inserções de dados
             // modelBuilder.Entity<TableModel>().HasData(
-            //
+            //    new TableModel { /* Inicializar dados */ }
             // );
         }
     }

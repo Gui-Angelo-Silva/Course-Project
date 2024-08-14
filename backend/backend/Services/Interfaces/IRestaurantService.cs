@@ -8,6 +8,6 @@ namespace backend.Services.Interfaces
         Task<RestaurantDTO> GetById(int id);
         Task Create(RestaurantDTO restaurantDTO);
         Task Update(RestaurantDTO restaurantDTO);
-        Task Delete(int id);
+        Task Delete(RestaurantDTO restaurantDTO);
     }
 }

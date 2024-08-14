@@ -31,28 +31,27 @@ public class UserRepository : IUserRepository
         return await _dbContext.User.AsNoTracking().FirstOrDefaultAsync(u => u.EmailUser == login.Email && u.PasswordUser == login.Password);
     }
 
-    public async Task<UserModel> Create(UserModel user)
+    public async Task<UserModel> Create(UserModel userModel)
     {
-        _dbContext.User.Add(user);
+        _dbContext.User.Add(userModel);
         await _dbContext.SaveChangesAsync();
 
-        return user;
+        return userModel;
     }
 
-    public async Task<UserModel> Update(UserModel user)
+    public async Task<UserModel> Update(UserModel userModel)
     {
-        _dbContext.Entry(user).State = EntityState.Modified;
+        _dbContext.Entry(userModel).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
 
-        return user;
+        return userModel;
     }
 
-    public async Task<UserModel> Delete(int id)
+    public async Task<UserModel> Delete(UserModel userModel)
     {
-        var user = await GetById(id);
-        _dbContext.User.Remove(user);
+        _dbContext.User.Remove(userModel);
         await _dbContext.SaveChangesAsync();
 
-        return user;
+        return userModel;
     }
 }

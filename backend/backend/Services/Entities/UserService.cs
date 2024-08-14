@@ -19,37 +19,50 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<UserDTO>> GetAll()
     {
-        var users = await _userRepository.GetAll();
-        return _mapper.Map<IEnumerable<UserDTO>>(users);
+        var usersModel = await _userRepository.GetAll();
+
+        usersModel.ToList().ForEach(user => user.PasswordUser = "");
+        return _mapper.Map<IEnumerable<UserDTO>>(usersModel);
     }
 
     public async Task<UserDTO> GetById(int id)
     {
-        var user = await _userRepository.GetById(id);
-        return _mapper.Map<UserDTO>(user);
+        var userModel = await _userRepository.GetById(id);
+
+        if (userModel is not null) userModel.PasswordUser = "";
+        return _mapper.Map<UserDTO>(userModel);
     }
 
     public async Task<UserDTO> Login(Login login)
     {
-        var user = await _userRepository.Login(login);
-        return _mapper.Map<UserDTO>(user);
+        var userModel = await _userRepository.Login(login);
+
+        if (userModel is not null) userModel.PasswordUser = "";
+        return _mapper.Map<UserDTO>(userModel);
     }
 
     public async Task Create(UserDTO userDTO)
     {
-        var user = _mapper.Map<UserModel>(userDTO);
-        await _userRepository.Create(user);
-        userDTO.Id = user.Id;
+        var userModel = _mapper.Map<UserModel>(userDTO);
+        await _userRepository.Create(userModel);
+        
+        userDTO.Id = userModel.Id;
+        userDTO.PasswordUser = "";
     }
 
     public async Task Update(UserDTO userDTO)
     {
-        var user = _mapper.Map<UserModel>(userDTO);
-        await _userRepository.Update(user);
+        var userModel = _mapper.Map<UserModel>(userDTO);
+        await _userRepository.Update(userModel);
+
+        userDTO.PasswordUser = "";
     }
 
-    public async Task Delete(int id)
+    public async Task Delete(UserDTO userDTO)
     {
-        await _userRepository.Delete(id);
+        var userModel = _mapper.Map<UserModel>(userDTO);
+        await _userRepository.Delete(userModel);
+
+        userDTO.PasswordUser = "";
     }
 }

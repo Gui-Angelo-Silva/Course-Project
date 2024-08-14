@@ -24,28 +24,27 @@ public class RestaurantRepository : IRestaurantRepository
         return await _dbContext.Restaurant.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
     }
 
-    public async Task<RestaurantModel> Create(RestaurantModel restaurant)
+    public async Task<RestaurantModel> Create(RestaurantModel restaurantModel)
     {
-        _dbContext.Restaurant.Add(restaurant);
+        _dbContext.Restaurant.Add(restaurantModel);
         await _dbContext.SaveChangesAsync();
 
-        return restaurant;
+        return restaurantModel;
     }
 
-    public async Task<RestaurantModel> Update(RestaurantModel restaurant)
+    public async Task<RestaurantModel> Update(RestaurantModel restaurantModel)
     {
-        _dbContext.Entry(restaurant).State = EntityState.Modified;
+        _dbContext.Entry(restaurantModel).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
 
-        return restaurant;
+        return restaurantModel;
     }
 
-    public async Task<RestaurantModel> Delete(int id)
+    public async Task<RestaurantModel> Delete(RestaurantModel restaurantModel)
     {
-        var restaurant = await GetById(id);
-        _dbContext.Restaurant.Remove(restaurant);
+        _dbContext.Restaurant.Remove(restaurantModel);
         await _dbContext.SaveChangesAsync();
 
-        return restaurant;
+        return restaurantModel;
     }
 }

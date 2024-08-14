@@ -11,6 +11,6 @@ namespace backend.Services.Interfaces
         Task<ReservationDTO> GetById(int id);
         Task Create(ReservationDTO reservationDTO);
         Task Update(ReservationDTO reservationDTO);
-        Task Delete(int id);
+        Task Delete(ReservationDTO reservationDTO);
     }
 }

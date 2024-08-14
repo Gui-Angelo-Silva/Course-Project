@@ -10,6 +10,6 @@ namespace backend.Services.Interfaces
         Task<TableDTO> GetById(int id);
         Task Create(TableDTO tableDTO);
         Task Update(TableDTO tableDTO);
-        Task Delete(int id);
+        Task Delete(TableDTO tableDTO);
     }
 }

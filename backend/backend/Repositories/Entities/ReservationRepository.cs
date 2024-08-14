@@ -34,28 +34,27 @@ public class ReservationRepository : IReservationRepository
         return await _dbContext.Reservation.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
     }
 
-    public async Task<ReservationModel> Create(ReservationModel reservation)
+    public async Task<ReservationModel> Create(ReservationModel reservationModel)
     {
-        _dbContext.Reservation.Add(reservation);
+        _dbContext.Reservation.Add(reservationModel);
         await _dbContext.SaveChangesAsync();
 
-        return reservation;
+        return reservationModel;
     }
 
-    public async Task<ReservationModel> Update(ReservationModel reservation)
+    public async Task<ReservationModel> Update(ReservationModel reservationModel)
     {
-        _dbContext.Entry(reservation).State = EntityState.Modified;
+        _dbContext.Entry(reservationModel).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
 
-        return reservation;
+        return reservationModel;
     }
 
-    public async Task<ReservationModel> Delete(int id)
+    public async Task<ReservationModel> Delete(ReservationModel reservationModel)
     {
-        var reservation = await GetById(id);
-        _dbContext.Reservation.Remove(reservation);
+        _dbContext.Reservation.Remove(reservationModel);
         await _dbContext.SaveChangesAsync();
 
-        return reservation;
+        return reservationModel;
     }
 }

@@ -16,8 +16,8 @@ namespace backend.Context.Builders
             modelBuilder.Entity<ReservationModel>().Property(r => r.ValueReservation).HasColumnType("decimal(8,2)").IsRequired();
             modelBuilder.Entity<ReservationModel>().Property(r => r.IdUser).IsRequired();
             modelBuilder.Entity<ReservationModel>().Property(r => r.IdTable).IsRequired();
-            modelBuilder.Entity<ReservationModel>().Property(r => r.CreateAt).HasColumnType("datetime").IsRequired();
-            modelBuilder.Entity<ReservationModel>().Property(r => r.UpdateAt).HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<ReservationModel>().Property(r => r.CreateAt).HasColumnType("timestamp").IsRequired();
+            modelBuilder.Entity<ReservationModel>().Property(r => r.UpdateAt).HasColumnType("timestamp").IsRequired();
 
             // Relacionamento: Restaurante -> Mesa
             modelBuilder.Entity<ReservationModel>()
@@ -34,10 +34,9 @@ namespace backend.Context.Builders
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-
             // Inserções de dados
             // modelBuilder.Entity<ReservationModel>().HasData(
-            //
+            //    new ReservationModel { /* Inicializar dados */ }
             // );
         }
     }

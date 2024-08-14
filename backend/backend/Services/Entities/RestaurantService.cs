@@ -19,31 +19,33 @@ public class RestaurantService : IRestaurantService
 
     public async Task<IEnumerable<RestaurantDTO>> GetAll()
     {
-        var restaurants = await _restaurantRepository.GetAll();
-        return _mapper.Map<IEnumerable<RestaurantDTO>>(restaurants);
+        var restaurantsModel = await _restaurantRepository.GetAll();
+        return _mapper.Map<IEnumerable<RestaurantDTO>>(restaurantsModel);
     }
 
     public async Task<RestaurantDTO> GetById(int id)
     {
-        var restaurant = await _restaurantRepository.GetById(id);
-        return _mapper.Map<RestaurantDTO>(restaurant);
+        var restaurantModel = await _restaurantRepository.GetById(id);
+        return _mapper.Map<RestaurantDTO>(restaurantModel);
     }
 
     public async Task Create(RestaurantDTO restaurantDTO)
     {
-        var restaurant = _mapper.Map<RestaurantModel>(restaurantDTO);
-        await _restaurantRepository.Create(restaurant);
-        restaurantDTO.Id = restaurant.Id;
+        var restaurantModel = _mapper.Map<RestaurantModel>(restaurantDTO);
+        await _restaurantRepository.Create(restaurantModel);
+
+        restaurantDTO.Id = restaurantModel.Id;
     }
 
     public async Task Update(RestaurantDTO restaurantDTO)
     {
-        var restaurant = _mapper.Map<RestaurantModel>(restaurantDTO);
-        await _restaurantRepository.Update(restaurant);
+        var restaurantModel = _mapper.Map<RestaurantModel>(restaurantDTO);
+        await _restaurantRepository.Update(restaurantModel);
     }
 
-    public async Task Delete(int id)
+    public async Task Delete(RestaurantDTO restaurantDTO)
     {
-        await _restaurantRepository.Delete(id);
+        var restaurantModel = _mapper.Map<RestaurantModel>(restaurantDTO);
+        await _restaurantRepository.Delete(restaurantModel);
     }
 }

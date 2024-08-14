@@ -23,7 +23,7 @@ namespace backend.Controllers
             _response = new Response();
         }
 
-        [HttpGet()]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<TableDTO>>> GetAll()
         {
             try
@@ -45,7 +45,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("{id:int}", Name = "GetTable")]
+        [HttpGet("GetById/{id:int}")]
         public async Task<ActionResult<TableDTO>> GetById(int id)
         {
             try
@@ -73,7 +73,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPost()]
+        [HttpPost("Create")]
         public async Task<ActionResult> Create([FromBody] TableDTO tableDTO)
         {
             if (tableDTO is null)
@@ -137,7 +137,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPut()]
+        [HttpPut("Update")]
         public async Task<ActionResult> Update([FromBody] TableDTO tableDTO)
         {
             if (tableDTO is null)
@@ -286,7 +286,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("Delete/{id:int}")]
         public async Task<ActionResult<TableDTO>> Delete(int id)
         {
             try
@@ -300,7 +300,7 @@ namespace backend.Controllers
                     return NotFound(_response);
                 }
 
-                await _tableService.Delete(id);
+                await _tableService.Delete(tableDTO);
 
                 _response.SetSuccess();
                 _response.Message = "Mesa " + tableDTO.CodeTable + " excluída com sucesso.";

@@ -29,28 +29,27 @@ public class TableRepository : ITableRepository
         return await _dbContext.Table.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
     }
 
-    public async Task<TableModel> Create(TableModel table)
+    public async Task<TableModel> Create(TableModel tableModel)
     {
-        _dbContext.Table.Add(table);
+        _dbContext.Table.Add(tableModel);
         await _dbContext.SaveChangesAsync();
 
-        return table;
+        return tableModel;
     }
 
-    public async Task<TableModel> Update(TableModel table)
+    public async Task<TableModel> Update(TableModel tableModel)
     {
-        _dbContext.Entry(table).State = EntityState.Modified;
+        _dbContext.Entry(tableModel).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
 
-        return table;
+        return tableModel;
     }
 
-    public async Task<TableModel> Delete(int id)
+    public async Task<TableModel> Delete(TableModel tableModel)
     {
-        var table = await GetById(id);
-        _dbContext.Table.Remove(table);
+        _dbContext.Table.Remove(tableModel);
         await _dbContext.SaveChangesAsync();
 
-        return table;
+        return tableModel;
     }
 }

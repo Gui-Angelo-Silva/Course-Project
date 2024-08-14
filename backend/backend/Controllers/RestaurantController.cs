@@ -19,7 +19,7 @@ namespace backend.Controllers
             _response = new Response();
         }
 
-        [HttpGet()]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<RestaurantDTO>>> GetAll()
         {
             try
@@ -41,7 +41,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("{id:int}", Name = "GetRestaurant")]
+        [HttpGet("GetById/{id:int}")]
         public async Task<ActionResult<RestaurantDTO>> GetById(int id)
         {
             try
@@ -69,7 +69,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPost()]
+        [HttpPost("Create")]
         public async Task<ActionResult> Create([FromBody] RestaurantDTO restaurantDTO)
         {
             if (restaurantDTO is null)
@@ -99,7 +99,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPut()]
+        [HttpPut("Update")]
         public async Task<ActionResult> Update([FromBody] RestaurantDTO restaurantDTO)
         {
             if (restaurantDTO is null)
@@ -137,7 +137,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("Delete/{id:int}")]
         public async Task<ActionResult<RestaurantDTO>> Delete(int id)
         {
             try
@@ -151,7 +151,7 @@ namespace backend.Controllers
                     return NotFound(_response);
                 }
 
-                await _restaurantService.Delete(id);
+                await _restaurantService.Delete(restaurantDTO);
 
                 _response.SetSuccess();
                 _response.Message = "Restaurante " + restaurantDTO.NameRestaurant + " excluído com sucesso.";

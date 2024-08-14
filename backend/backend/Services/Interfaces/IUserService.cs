@@ -9,6 +9,6 @@ namespace backend.Services.Interfaces
         Task<UserDTO> Login(Login login);
         Task Create(UserDTO userDTO);
         Task Update(UserDTO userDTO);
-        Task Delete(int id);
+        Task Delete(UserDTO userDTO);
     }
 }

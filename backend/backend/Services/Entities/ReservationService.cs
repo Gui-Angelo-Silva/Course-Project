@@ -19,43 +19,45 @@ public class ReservationService : IReservationService
 
     public async Task<IEnumerable<ReservationDTO>> GetAll()
     {
-        var reservations = await _reservationRepository.GetAll();
-        return _mapper.Map<IEnumerable<ReservationDTO>>(reservations);
+        var reservationsModel = await _reservationRepository.GetAll();
+        return _mapper.Map<IEnumerable<ReservationDTO>>(reservationsModel);
     }
 
     public async Task<IEnumerable<ReservationDTO>> GetReservationsRelatedUser(int idUser)
     {
-        var reservations = await _reservationRepository.GetReservationsRelatedUser(idUser);
-        return _mapper.Map<IEnumerable<ReservationDTO>>(reservations);
+        var reservationsModel = await _reservationRepository.GetReservationsRelatedUser(idUser);
+        return _mapper.Map<IEnumerable<ReservationDTO>>(reservationsModel);
     }
 
     public async Task<IEnumerable<ReservationDTO>> GetReservationsRelatedTable(int idTable)
     {
-        var reservations = await _reservationRepository.GetReservationsRelatedTable(idTable);
-        return _mapper.Map<IEnumerable<ReservationDTO>>(reservations);
+        var reservationsModel = await _reservationRepository.GetReservationsRelatedTable(idTable);
+        return _mapper.Map<IEnumerable<ReservationDTO>>(reservationsModel);
     }
 
     public async Task<ReservationDTO> GetById(int id)
     {
-        var reservation = await _reservationRepository.GetById(id);
-        return _mapper.Map<ReservationDTO>(reservation);
+        var reservationModel = await _reservationRepository.GetById(id);
+        return _mapper.Map<ReservationDTO>(reservationModel);
     }
 
     public async Task Create(ReservationDTO reservationDTO)
     {
-        var reservation = _mapper.Map<ReservationModel>(reservationDTO);
-        await _reservationRepository.Create(reservation);
-        reservationDTO.Id = reservation.Id;
+        var reservationModel = _mapper.Map<ReservationModel>(reservationDTO);
+        await _reservationRepository.Create(reservationModel);
+
+        reservationDTO.Id = reservationModel.Id;
     }
 
     public async Task Update(ReservationDTO reservationDTO)
     {
-        var reservation = _mapper.Map<ReservationModel>(reservationDTO);
-        await _reservationRepository.Update(reservation);
+        var reservationModel = _mapper.Map<ReservationModel>(reservationDTO);
+        await _reservationRepository.Update(reservationModel);
     }
 
-    public async Task Delete(int id)
+    public async Task Delete(ReservationDTO reservationDTO)
     {
-        await _reservationRepository.Delete(id);
+        var reservationModel = _mapper.Map<ReservationModel>(reservationDTO);
+        await _reservationRepository.Delete(reservationModel);
     }
 }

@@ -21,7 +21,7 @@ namespace backend.Controllers
             _response = new Response();
         }
 
-        [HttpGet()]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll()
         {
             try
@@ -43,7 +43,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("{id:int}", Name = "GetUser")]
+        [HttpGet("GetById/{id:int}")]
         public async Task<ActionResult<UserDTO>> GetById(int id)
         {
             try
@@ -71,7 +71,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPost()]
+        [HttpPost("Create")]
         public async Task<ActionResult> Create([FromBody] UserDTO userDTO)
         {
             if (userDTO is null)
@@ -109,6 +109,7 @@ namespace backend.Controllers
                     return BadRequest(_response);
                 }
 
+                userDTO.PasswordUser = Operator.HashPassword(userDTO.PasswordUser);
                 await _userService.Create(userDTO);
 
                 _response.SetSuccess();
@@ -125,7 +126,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPost()]
+        [HttpPost("Login")]
         public async Task<ActionResult> Login([FromBody] Login login)
         {
             if (login is null)
@@ -138,6 +139,7 @@ namespace backend.Controllers
 
             try
             {
+                login.Password = Operator.HashPassword(login.Password);
                 var userDTO = await _userService.Login(login);
                 if (userDTO is null)
                 {
@@ -164,7 +166,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPost()]
+        [HttpPost("Validate")]
         public async Task<ActionResult> Validate([FromBody] Token token)
         {
             if (token is null)
@@ -200,7 +202,7 @@ namespace backend.Controllers
         }
 
 
-        [HttpPut()]
+        [HttpPut("Update")]
         public async Task<ActionResult> Update([FromBody] UserDTO userDTO)
         {
             if (userDTO is null)
@@ -246,6 +248,7 @@ namespace backend.Controllers
                     return BadRequest(_response);
                 }
 
+                userDTO.PasswordUser = existingUserDTO.PasswordUser;
                 await _userService.Update(userDTO);
 
                 _response.SetSuccess();
@@ -262,7 +265,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("Delete/{id:int}")]
         public async Task<ActionResult<UserDTO>> Delete(int id)
         {
             try
@@ -276,7 +279,7 @@ namespace backend.Controllers
                     return NotFound(_response);
                 }
 
-                await _userService.Delete(id);
+                await _userService.Delete(userDTO);
 
                 _response.SetSuccess();
                 _response.Message = "Usuário " + userDTO.NameUser + " excluído com sucesso.";

@@ -19,37 +19,39 @@ public class TableService : ITableService
 
     public async Task<IEnumerable<TableDTO>> GetAll()
     {
-        var tables = await _tableRepository.GetAll();
-        return _mapper.Map<IEnumerable<TableDTO>>(tables);
+        var tablesModel = await _tableRepository.GetAll();
+        return _mapper.Map<IEnumerable<TableDTO>>(tablesModel);
     }
 
     public async Task<IEnumerable<TableDTO>> GetTablesRelatedRestaurant(int idRestaurant)
     {
-        var tables = await _tableRepository.GetTablesRelatedRestaurant(idRestaurant);
-        return _mapper.Map<IEnumerable<TableDTO>>(tables);
+        var tablesModel = await _tableRepository.GetTablesRelatedRestaurant(idRestaurant);
+        return _mapper.Map<IEnumerable<TableDTO>>(tablesModel);
     }
 
     public async Task<TableDTO> GetById(int id)
     {
-        var table = await _tableRepository.GetById(id);
-        return _mapper.Map<TableDTO>(table);
+        var tableModel = await _tableRepository.GetById(id);
+        return _mapper.Map<TableDTO>(tableModel);
     }
 
     public async Task Create(TableDTO tableDTO)
     {
-        var table = _mapper.Map<TableModel>(tableDTO);
-        await _tableRepository.Create(table);
-        tableDTO.Id = table.Id;
+        var tableModel = _mapper.Map<TableModel>(tableDTO);
+        await _tableRepository.Create(tableModel);
+
+        tableDTO.Id = tableModel.Id;
     }
 
     public async Task Update(TableDTO tableDTO)
     {
-        var table = _mapper.Map<TableModel>(tableDTO);
-        await _tableRepository.Update(table);
+        var tableModel = _mapper.Map<TableModel>(tableDTO);
+        await _tableRepository.Update(tableModel);
     }
 
-    public async Task Delete(int id)
+    public async Task Delete(TableDTO tableDTO)
     {
-        await _tableRepository.Delete(id);
+        var tableModel = _mapper.Map<TableModel>(tableDTO);
+        await _tableRepository.Delete(tableModel);
     }
 }

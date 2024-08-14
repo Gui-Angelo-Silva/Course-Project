@@ -25,7 +25,7 @@ namespace backend.Controllers
             _response = new Response();
         }
 
-        [HttpGet()]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<ReservationDTO>>> GetAll()
         {
             try
@@ -47,7 +47,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("{id:int}", Name = "GetReservation")]
+        [HttpGet("GetById/{id:int}")]
         public async Task<ActionResult<ReservationDTO>> GetById(int id)
         {
             try
@@ -75,7 +75,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPost()]
+        [HttpPost("Create")]
         public async Task<ActionResult> Create([FromBody] ReservationDTO reservationDTO)
         {
             if (reservationDTO is null)
@@ -148,7 +148,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPut()]
+        [HttpPut("Update")]
         public async Task<ActionResult> Update([FromBody] ReservationDTO reservationDTO)
         {
             if (reservationDTO is null)
@@ -229,7 +229,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("Delete/{id:int}")]
         public async Task<ActionResult<ReservationDTO>> Delete(int id)
         {
             try
@@ -243,7 +243,7 @@ namespace backend.Controllers
                     return NotFound(_response);
                 }
 
-                await _reservationService.Delete(id);
+                await _reservationService.Delete(reservationDTO);
 
                 _response.SetSuccess();
                 _response.Message = "Reserva para " + reservationDTO.DateReservation + " excluída com sucesso.";
