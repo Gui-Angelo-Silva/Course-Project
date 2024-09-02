@@ -1,5 +1,5 @@
 import React from 'react'
-import Logo from '../assets/Logo'
+import Logo from '../../assets/Logo'
 
 const Navbar = () => {
   return (

@@ -71,62 +71,73 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPost("Create")]
-        public async Task<ActionResult> Create([FromBody] UserDTO userDTO)
-        {
-            if (userDTO is null)
-            {
-                _response.SetInvalid();
-                _response.Message = "Dado(s) inválido(s)!";
-                _response.Data = userDTO;
-                return BadRequest(_response);
-            }
-            userDTO.Id = 0;
+		[HttpPost("Create")]
+		public async Task<ActionResult> Create([FromBody] UserDTO userDTO)
+		{
+			if (userDTO is null)
+			{
+				_response.SetInvalid();
+				_response.Message = "Dado(s) inválido(s)!";
+				_response.Data = userDTO;
+				return BadRequest(_response);
+			}
+			userDTO.Id = 0;
 
-            try
-            {
-                dynamic errors = new ExpandoObject();
-                var hasErrors = false;
+			try
+			{
+				dynamic errors = new ExpandoObject();
+				var hasErrors = false;
 
-                CheckDatas(userDTO, ref errors, ref hasErrors);
+				CheckDatas(userDTO, ref errors, ref hasErrors);
 
-                if (hasErrors)
-                {
-                    _response.SetConflict();
-                    _response.Message = "Dado(s) com conflito!";
-                    _response.Data = errors;
-                    return BadRequest(_response);
-                }
+				if (hasErrors)
+				{
+					_response.SetConflict();
+					_response.Message = "Dado(s) com conflito!";
+					_response.Data = errors;
+					return BadRequest(_response);
+				}
 
-                var usersDTO = await _userService.GetAll();
-                CheckDuplicates(usersDTO, userDTO, ref errors, ref hasErrors);
+				var usersDTO = await _userService.GetAll();
+				CheckDuplicates(usersDTO, userDTO, ref errors, ref hasErrors);
 
-                if (hasErrors)
-                {
-                    _response.SetConflict();
-                    _response.Message = "Dado(s) com conflito!";
-                    _response.Data = errors;
-                    return BadRequest(_response);
-                }
+				if (hasErrors)
+				{
+					_response.SetConflict();
+					_response.Message = "Dado(s) com conflito!";
+					_response.Data = errors;
+					return BadRequest(_response);
+				}
 
-                userDTO.PasswordUser = Operator.HashPassword(userDTO.PasswordUser);
-                await _userService.Create(userDTO);
+				// Criptografa a senha
+				var hashedPassword = Operator.HashPassword(userDTO.PasswordUser);
 
-                _response.SetSuccess();
-                _response.Message = "Usuário " + userDTO.NameUser + " cadastrado com sucesso.";
-                _response.Data = userDTO;
-                return Ok(_response);
-            }
-            catch (Exception ex)
-            {
-                _response.SetError();
-                _response.Message = "Não foi possível cadastrar o Usuário!";
-                _response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
-                return StatusCode(StatusCodes.Status500InternalServerError, _response);
-            }
-        }
+				// Remove o primeiro caractere da senha criptografada
+				if (hashedPassword.Length > 0)
+				{
+					hashedPassword = hashedPassword.Substring(0);
+				}
 
-        [HttpPost("Login")]
+				userDTO.PasswordUser = hashedPassword;
+
+				await _userService.Create(userDTO);
+
+				_response.SetSuccess();
+				_response.Message = "Usuário " + userDTO.NameUser + " cadastrado com sucesso.";
+				_response.Data = userDTO;
+				return Ok(_response);
+			}
+			catch (Exception ex)
+			{
+				_response.SetError();
+				_response.Message = "Não foi possível cadastrar o Usuário!";
+				_response.Data = new { ErrorMessage = ex.Message, StackTrace = ex.StackTrace ?? "No stack trace available!" };
+				return StatusCode(StatusCodes.Status500InternalServerError, _response);
+			}
+		}
+
+
+		[HttpPost("Login")]
         public async Task<ActionResult> Login([FromBody] Login login)
         {
             if (login is null)
@@ -139,7 +150,7 @@ namespace backend.Controllers
 
             try
             {
-                login.Password = Operator.HashPassword(login.Password);
+                login.Password = Operator.HashPassword(login.Password); // Coloque a validação aqui
                 var userDTO = await _userService.Login(login);
                 if (userDTO is null)
                 {

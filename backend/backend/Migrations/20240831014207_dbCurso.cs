@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Database : Migration
+    public partial class dbCurso : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,6 +26,19 @@ namespace backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_restaurant", x => x.idrestaurant);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "thematic",
+                columns: table => new
+                {
+                    idthematic = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    namethematic = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_thematic", x => x.idthematic);
                 });
 
             migrationBuilder.CreateTable(
@@ -65,6 +78,32 @@ namespace backend.Migrations
                         column: x => x.IdRestaurant,
                         principalTable: "restaurant",
                         principalColumn: "idrestaurant",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "thematicrestaurant",
+                columns: table => new
+                {
+                    idthematicrestaurant = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    idrestaurant = table.Column<int>(type: "integer", nullable: false),
+                    idthematic = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_thematicrestaurant", x => x.idthematicrestaurant);
+                    table.ForeignKey(
+                        name: "FK_thematicrestaurant_restaurant_idrestaurant",
+                        column: x => x.idrestaurant,
+                        principalTable: "restaurant",
+                        principalColumn: "idrestaurant",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_thematicrestaurant_thematic_idthematic",
+                        column: x => x.idthematic,
+                        principalTable: "thematic",
+                        principalColumn: "idthematic",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -120,6 +159,16 @@ namespace backend.Migrations
                 name: "IX_table_IdRestaurant",
                 table: "table",
                 column: "IdRestaurant");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_thematicrestaurant_idrestaurant",
+                table: "thematicrestaurant",
+                column: "idrestaurant");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_thematicrestaurant_idthematic",
+                table: "thematicrestaurant",
+                column: "idthematic");
         }
 
         /// <inheritdoc />
@@ -129,10 +178,16 @@ namespace backend.Migrations
                 name: "reservation");
 
             migrationBuilder.DropTable(
+                name: "thematicrestaurant");
+
+            migrationBuilder.DropTable(
                 name: "table");
 
             migrationBuilder.DropTable(
                 name: "user");
+
+            migrationBuilder.DropTable(
+                name: "thematic");
 
             migrationBuilder.DropTable(
                 name: "restaurant");

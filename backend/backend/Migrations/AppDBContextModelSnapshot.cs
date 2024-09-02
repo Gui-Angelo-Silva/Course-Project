@@ -155,6 +155,52 @@ namespace backend.Migrations
                     b.ToTable("table");
                 });
 
+            modelBuilder.Entity("backend.Objects.Models.Entities.ThematicModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idthematic");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("NameThematic")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("namethematic");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("thematic");
+                });
+
+            modelBuilder.Entity("backend.Objects.Models.Entities.ThematicRestaurantModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("idthematicrestaurant");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("IdRestaurant")
+                        .HasColumnType("integer")
+                        .HasColumnName("idrestaurant");
+
+                    b.Property<int>("IdThematic")
+                        .HasColumnType("integer")
+                        .HasColumnName("idthematic");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdRestaurant");
+
+                    b.HasIndex("IdThematic");
+
+                    b.ToTable("thematicrestaurant");
+                });
+
             modelBuilder.Entity("backend.Objects.Models.Entities.UserModel", b =>
                 {
                     b.Property<int>("Id")
@@ -239,14 +285,40 @@ namespace backend.Migrations
                     b.Navigation("RestaurantModel");
                 });
 
+            modelBuilder.Entity("backend.Objects.Models.Entities.ThematicRestaurantModel", b =>
+                {
+                    b.HasOne("backend.Objects.Models.Entities.RestaurantModel", "RestaurantModel")
+                        .WithMany("ThematicsRestaurantModel")
+                        .HasForeignKey("IdRestaurant")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Objects.Models.Entities.ThematicModel", "ThematicModel")
+                        .WithMany("ThematicsRestaurantModel")
+                        .HasForeignKey("IdThematic")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RestaurantModel");
+
+                    b.Navigation("ThematicModel");
+                });
+
             modelBuilder.Entity("backend.Objects.Models.Entities.RestaurantModel", b =>
                 {
                     b.Navigation("TablesModel");
+
+                    b.Navigation("ThematicsRestaurantModel");
                 });
 
             modelBuilder.Entity("backend.Objects.Models.Entities.TableModel", b =>
                 {
                     b.Navigation("ReservationsModel");
+                });
+
+            modelBuilder.Entity("backend.Objects.Models.Entities.ThematicModel", b =>
+                {
+                    b.Navigation("ThematicsRestaurantModel");
                 });
 
             modelBuilder.Entity("backend.Objects.Models.Entities.UserModel", b =>
